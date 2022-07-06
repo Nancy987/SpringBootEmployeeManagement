@@ -1,0 +1,1 @@
+Employee Management application using Spring Boot with Basic Authentication.
