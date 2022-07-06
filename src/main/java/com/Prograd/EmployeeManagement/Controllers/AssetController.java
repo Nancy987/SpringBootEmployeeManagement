@@ -1,6 +1,7 @@
 package com.Prograd.EmployeeManagement.Controllers;
 
 import com.Prograd.EmployeeManagement.Exceptions.AssetNotFound;
+import com.Prograd.EmployeeManagement.Exceptions.NoAccessException;
 import com.Prograd.EmployeeManagement.Exceptions.OrganisationNotFound;
 import com.Prograd.EmployeeManagement.Modals.Asset;
 import com.Prograd.EmployeeManagement.Service.AssetService;
@@ -21,7 +22,7 @@ public class AssetController {
         this.assetService = assetService;
     }
     @PostMapping
-    public ResponseEntity<Asset> saveAsset(@Valid @RequestBody Asset asset) throws OrganisationNotFound {
+    public ResponseEntity<Asset> saveAsset(@Valid @RequestBody Asset asset) throws OrganisationNotFound, NoAccessException {
         return new ResponseEntity<Asset>(assetService.saveAsset(asset), HttpStatus.CREATED);
     }
     @GetMapping

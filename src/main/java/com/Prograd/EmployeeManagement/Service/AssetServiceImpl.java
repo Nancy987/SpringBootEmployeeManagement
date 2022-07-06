@@ -1,12 +1,15 @@
 package com.Prograd.EmployeeManagement.Service;
 
 import com.Prograd.EmployeeManagement.Exceptions.AssetNotFound;
+import com.Prograd.EmployeeManagement.Exceptions.NoAccessException;
 import com.Prograd.EmployeeManagement.Exceptions.OrganisationNotFound;
 import com.Prograd.EmployeeManagement.Modals.Asset;
 import com.Prograd.EmployeeManagement.Modals.Organisation;
 import com.Prograd.EmployeeManagement.Repository.AssetRepository;
 import com.Prograd.EmployeeManagement.Repository.OrganisationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,14 +26,24 @@ public class AssetServiceImpl implements AssetService {
     private OrganisationRepository organisationRepository;
 
     @Override
-    public Asset saveAsset(Asset asset) throws OrganisationNotFound {
+    public Asset saveAsset(Asset asset) throws OrganisationNotFound, NoAccessException {
         int quantity = asset.getQuantity();
         float cost_per_asset = asset.getCost_per_asset();
         float total_cost = cost_per_asset*quantity;
         asset.setTotal_cost(total_cost);
-        Organisation organisation = organisationRepository.findById(10).orElseThrow(()->new OrganisationNotFound("Organisation not exist"));
-        asset.setOrganisation(organisation);
-        return assetRepository.save(asset);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasEmpRole = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_EMPLOYEE"));
+
+        if(!hasEmpRole) {
+            Organisation user = (Organisation) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            int org_id = user.getId();
+            Organisation organisation = organisationRepository.findById(org_id).orElseThrow(() -> new OrganisationNotFound("Organisation not exist"));
+            asset.setOrganisation(organisation);
+            return assetRepository.save(asset);
+        }
+        else {
+            throw new NoAccessException("You have no access for this request");
+        }
     }
 
     @Override
