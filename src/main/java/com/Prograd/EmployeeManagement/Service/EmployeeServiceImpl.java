@@ -32,12 +32,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee saveEmployee(Employee employee) throws OrganisationNotFound {
+    public Employee saveEmployee(Employee employee) throws OrganisationNotFound, NoAccessException {
         String encodedPassword = passwordEncoder.encode(employee.getPassword());
         employee.setPassword(encodedPassword);
-        Organisation organisation = organisationRepository.findById(10).orElseThrow(()->new OrganisationNotFound("Organisation not exist"));
-        employee.setOrganisation(organisation);
-        return employeeRepository.save(employee);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean hasEmpRole = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_EMPLOYEE"));
+
+        if(!hasEmpRole) {
+            Organisation user = (Organisation) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            int org_id = user.getId();
+            Organisation organisation = organisationRepository.findById(org_id).orElseThrow(() -> new OrganisationNotFound("Organisation not exist"));
+            employee.setOrganisation(organisation);
+            return employeeRepository.save(employee);
+        }
+        else {
+            throw new NoAccessException("You have no access for this request");
+        }
     }
     @Autowired
     private EmployeeSecurity employeeSecurity;
@@ -68,7 +79,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployee(Employee employee, int id) throws EmployeeNotFound, OrganisationNotFound, NoAccessException {
+    public Employee updateEmployee(Employee employee, int id) throws EmployeeNotFound, NoAccessException {
         Employee existingEmployee = employeeRepository.findById(id).orElseThrow(()->new EmployeeNotFound(("Employee not exist")));
 
         existingEmployee.setEmployee_name(employee.getEmployee_name());

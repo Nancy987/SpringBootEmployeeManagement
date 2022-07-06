@@ -8,7 +8,7 @@ import com.Prograd.EmployeeManagement.Modals.Employee;
 import java.util.List;
 
 public interface EmployeeService {
-    Employee saveEmployee(Employee employee) throws OrganisationNotFound;
+    Employee saveEmployee(Employee employee) throws OrganisationNotFound, NoAccessException;
     List<Employee> getAllEmployees();
     Employee getEmployeeById(int id) throws EmployeeNotFound, NoAccessException;
     Employee updateEmployee(Employee Employee,int id) throws EmployeeNotFound, OrganisationNotFound, NoAccessException;

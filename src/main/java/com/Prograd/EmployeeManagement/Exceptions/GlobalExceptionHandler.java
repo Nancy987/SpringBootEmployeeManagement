@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoAccessException.class)
     public ResponseEntity<ApiResponse> resourceNotFoundExceptionHandler(NoAccessException error) {
         String message = error.getMessage();
-        return new ResponseEntity<ApiResponse>(new ApiResponse(message, false), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<ApiResponse>(new ApiResponse(message, false), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

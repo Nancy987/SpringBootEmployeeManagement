@@ -23,7 +23,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> saveEmployee(@Valid @RequestBody Employee employee) throws OrganisationNotFound {
+    public ResponseEntity<Employee> saveEmployee(@Valid @RequestBody Employee employee) throws OrganisationNotFound, NoAccessException {
         return new ResponseEntity<Employee>(employeeService.saveEmployee(employee), HttpStatus.CREATED);
     }
     @GetMapping
