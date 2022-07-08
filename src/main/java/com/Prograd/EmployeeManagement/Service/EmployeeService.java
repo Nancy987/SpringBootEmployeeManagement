@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface EmployeeService {
     Employee saveEmployee(Employee employee) throws OrganisationNotFound, NoAccessException;
-    List<Employee> getAllEmployees();
-    Employee getEmployeeById(int id) throws EmployeeNotFound, NoAccessException;
+    List<Employee> getAllEmployees() throws EmployeeNotFound, OrganisationNotFound;
+    Employee getEmployeeById(int id) throws EmployeeNotFound, NoAccessException, OrganisationNotFound;
     Employee updateEmployee(Employee Employee,int id) throws EmployeeNotFound, OrganisationNotFound, NoAccessException;
-    void deleteEmployee(int id);
+    void deleteEmployee(int id) throws NoAccessException, OrganisationNotFound;
 }

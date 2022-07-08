@@ -26,19 +26,19 @@ public class AssetController {
         return new ResponseEntity<Asset>(assetService.saveAsset(asset), HttpStatus.CREATED);
     }
     @GetMapping
-    public List<Asset> getAllAssets(){
+    public List<Asset> getAllAssets() throws OrganisationNotFound {
         return assetService.getAllAssets();
     }
     @GetMapping("{id}")
-    public ResponseEntity<Asset> getAssetById(@PathVariable("id") int id) throws AssetNotFound {
+    public ResponseEntity<Asset> getAssetById(@PathVariable("id") int id) throws AssetNotFound, NoAccessException, OrganisationNotFound {
         return new ResponseEntity<Asset>(assetService.getAssetById(id), HttpStatus.OK);
     }
     @PutMapping("{id}")
-    public ResponseEntity<Asset> updateAsset(@PathVariable("id") int id,@Valid @RequestBody Asset Asset) throws AssetNotFound {
+    public ResponseEntity<Asset> updateAsset(@PathVariable("id") int id,@Valid @RequestBody Asset Asset) throws AssetNotFound, NoAccessException, OrganisationNotFound {
         return new ResponseEntity<Asset>(assetService.updateAsset(Asset,id), HttpStatus.OK);
     }
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteAsset(@PathVariable("id") int id){
+    public ResponseEntity<String> deleteAsset(@PathVariable("id") int id) throws NoAccessException, OrganisationNotFound {
         assetService.deleteAsset(id);
         return new ResponseEntity<String>("Asset is deleted successfully.",HttpStatus.OK);
     }

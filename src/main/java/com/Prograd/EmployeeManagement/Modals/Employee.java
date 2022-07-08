@@ -45,6 +45,8 @@ public class Employee implements UserDetails {
 
     @Column(nullable = false)
     @NotEmpty
+    @Pattern(message="password must contain atleast 1 uppercase, 1 lowercase, 1 special character and 1 digit with atleast 8 characters",
+            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
     private String password;
 
     @Column(nullable = false)

@@ -40,8 +40,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         boolean hasEmpRole = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_EMPLOYEE"));
 
         if(!hasEmpRole) {
-            Organisation user = (Organisation) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            int org_id = user.getId();
+            Organisation org = organisationRepository.findAll().get(0);
+//            Organisation user = (Organisation) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            int org_id = org.getId();
             Organisation organisation = organisationRepository.findById(org_id).orElseThrow(() -> new OrganisationNotFound("Organisation not exist"));
             employee.setOrganisation(organisation);
             return employeeRepository.save(employee);
@@ -54,7 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeSecurity employeeSecurity;
 
     @Override
-    public List<Employee> getAllEmployees() {
+    public List<Employee> getAllEmployees() throws OrganisationNotFound {
         return employeeRepository.findAll();
     }
 
@@ -79,7 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployee(Employee employee, int id) throws EmployeeNotFound, NoAccessException {
+    public Employee updateEmployee(Employee employee, int id) throws EmployeeNotFound, NoAccessException{
         Employee existingEmployee = employeeRepository.findById(id).orElseThrow(()->new EmployeeNotFound(("Employee not exist")));
 
         existingEmployee.setEmployee_name(employee.getEmployee_name());

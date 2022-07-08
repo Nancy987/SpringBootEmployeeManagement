@@ -27,11 +27,11 @@ public class EmployeeController {
         return new ResponseEntity<Employee>(employeeService.saveEmployee(employee), HttpStatus.CREATED);
     }
     @GetMapping
-    public List<Employee> getAllEmployees(){
+    public List<Employee> getAllEmployees() throws OrganisationNotFound, EmployeeNotFound {
         return employeeService.getAllEmployees();
     }
     @GetMapping("{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") int id) throws EmployeeNotFound, NoAccessException {
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") int id) throws EmployeeNotFound, NoAccessException, OrganisationNotFound {
         return new ResponseEntity<Employee>(employeeService.getEmployeeById(id), HttpStatus.OK);
     }
     @PutMapping("{id}")
@@ -39,7 +39,7 @@ public class EmployeeController {
         return new ResponseEntity<Employee>(employeeService.updateEmployee(employee,id), HttpStatus.OK);
     }
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable("id") int id){
+    public ResponseEntity<String> deleteEmployee(@PathVariable("id") int id) throws NoAccessException, OrganisationNotFound {
         employeeService.deleteEmployee(id);
         return new ResponseEntity<String>("Employee is deleted successfully.",HttpStatus.OK);
     }

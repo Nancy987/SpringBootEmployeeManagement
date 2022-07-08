@@ -1,5 +1,6 @@
 package com.Prograd.EmployeeManagement.Controllers;
 
+import com.Prograd.EmployeeManagement.Exceptions.NoAccessException;
 import com.Prograd.EmployeeManagement.Exceptions.OrganisationNotFound;
 import com.Prograd.EmployeeManagement.Modals.Organisation;
 import com.Prograd.EmployeeManagement.Service.OrganisationService;
@@ -28,15 +29,15 @@ public class OrganisationController {
         return organisationService.getAllOrganisations();
     }
     @GetMapping("{id}")
-    public ResponseEntity<Organisation> getOrganisationById(@PathVariable("id") int id) throws OrganisationNotFound {
+    public ResponseEntity<Organisation> getOrganisationById(@PathVariable("id") int id) throws OrganisationNotFound, NoAccessException {
         return new ResponseEntity<Organisation>(organisationService.getOrganisationById(id), HttpStatus.OK);
     }
     @PutMapping("{id}")
-    public ResponseEntity<Organisation> updateOrganisation(@PathVariable("id") int id,@Valid @RequestBody Organisation organisation) throws OrganisationNotFound {
+    public ResponseEntity<Organisation> updateOrganisation(@PathVariable("id") int id,@Valid @RequestBody Organisation organisation) throws OrganisationNotFound, NoAccessException {
         return new ResponseEntity<Organisation>(organisationService.updateOrganisation(organisation,id), HttpStatus.OK);
     }
 //    @DeleteMapping("{id}")
-//    public ResponseEntity<String> deleteOrganisation(@PathVariable("id") int id){
+//    public ResponseEntity<String> deleteOrganisation(@PathVariable("id") int id) throws OrganisationNotFound, NoAccessException {
 //        organisationService.deleteOrganisation(id);
 //        return new ResponseEntity<String>("Organisation is deleted successfully.",HttpStatus.OK);
 //    }

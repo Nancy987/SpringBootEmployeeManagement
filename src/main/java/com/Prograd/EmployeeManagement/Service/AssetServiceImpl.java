@@ -35,8 +35,9 @@ public class AssetServiceImpl implements AssetService {
         boolean hasEmpRole = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ROLE_EMPLOYEE"));
 
         if(!hasEmpRole) {
-            Organisation user = (Organisation) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            int org_id = user.getId();
+            Organisation org = organisationRepository.findAll().get(0);
+//            Organisation user = (Organisation) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            int org_id = org.getId();
             Organisation organisation = organisationRepository.findById(org_id).orElseThrow(() -> new OrganisationNotFound("Organisation not exist"));
             asset.setOrganisation(organisation);
             return assetRepository.save(asset);
@@ -47,18 +48,18 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public List<Asset> getAllAssets() {
+    public List<Asset> getAllAssets() throws OrganisationNotFound {
         return assetRepository.findAll();
     }
 
     @Override
-    public Asset getAssetById(int id) throws AssetNotFound {
+    public Asset getAssetById(int id) throws AssetNotFound{
         Asset asset = assetRepository.findById(id).orElseThrow(()->new AssetNotFound("Asset not exist"));
         return asset;
     }
 
     @Override
-    public Asset updateAsset(Asset asset, int id) throws AssetNotFound {
+    public Asset updateAsset(Asset asset, int id) throws AssetNotFound{
         Asset existingAsset = assetRepository.findById(id).orElseThrow(()->new AssetNotFound(("Asset not exist")));
         int quantity = asset.getQuantity();
         float cost_per_asset = asset.getCost_per_asset();
